@@ -5,7 +5,6 @@ define(function(require, exports, module) {
     var $ = require('$');
     var mcenter = require('message');
     var cellula = require('cellula');
-    var SYNCSpect = require('SYNCSpect');
     var moduleClassName = ".module";
     var Stage = {
         modules:[],
