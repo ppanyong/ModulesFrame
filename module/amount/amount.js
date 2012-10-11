@@ -14,7 +14,8 @@ define(function (require, exports) {
         refresh:function () {
             seajs.log('amount.refresh ing...');
             this.registerEvents();
-            this.trigger('amountChange');
+            //this.trigger('amountChange');
+            this.deliver({code:'amountChange',body:''});
         },
         registerEvents:function(){
             var that = this;
