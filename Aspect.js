@@ -4,7 +4,8 @@ define(function(require, exports) {
         object.yield = null;
         object.rv = { };
         object.before = function(method, f, isAsyn) {
-            var original = eval("this." + method);
+            //var original = eval("this." + method);
+            var original = object[method];
             if (isAsyn) {
                 this[method + '_Asyn'] = original;
                 this[method] = function() {

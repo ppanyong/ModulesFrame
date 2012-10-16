@@ -6,6 +6,7 @@ define(function (require, exports, module) {
      */
     var $ = require('$');
     var Aspect = require('mi.util.Aspect');
+    var funcAspect = require('#funcAspect');
     var cellula = require('cellula');
     var ajaxQueue = {
         queue:[],
@@ -30,12 +31,18 @@ define(function (require, exports, module) {
                             (module._fill_times) ? module._fill_times++ : (module._fill_times = 1);
                             //seajs.log(module.__cid__+' dom has been  fill,times='+module._fill_times)
                         }
-                        asyncspect._execute(module, callback);
+                        //asyncspect._execute(module, callback);
+                        callback && module[callback + '_Asyn'] && (module[callback + '_Asyn']());
+                        asyncspect._clean(module);
                         module.trigger('DOMLOADED', module);
                     }]
                 });
                 tmpAjaxInstance.url = module.url;
+console.log(ajaxQueue.queue)
+                //setInterval(function(){console.log(ajaxQueue.queue);},100);
+
                 ajaxQueue.queue.push(tmpAjaxInstance);
+console.log(ajaxQueue.queue)
             }
         },
         getAjaxQueueByUrl:function (url) {
@@ -102,11 +109,19 @@ define(function (require, exports, module) {
                 callback && config[callback + '_Asyn'] && (config[callback + '_Asyn']());
             }
         },
+        __load__:function(){
+            if (!this.sync) {console.log('hhhhhhh  load async');
+                ajaxQueue.call(this, this.__funcname__, asyncspect);
+            } else {console.log('hhhhhhh  load sync');
+                return this._origin.apply(this, arguments);
+            }
+        },
         /**
          * 对api暴露出来的方法，增加切面
          * @param module
          */
         aspect:function (module) {
+/*
             this._init(module);
             var api = module.getApiMap();
             Aspect(module);
@@ -119,6 +134,18 @@ define(function (require, exports, module) {
                     }, true);
                 }
             }
+*/
+
+            this._init(module);
+            var api = module.getApiMap();
+
+            for (var n in api) {
+                if (module[api[n]]) {
+                    funcAspect(module).wrap(api[n], this.__load__);
+                }
+            }
+
+
 
         }
 
