@@ -7,64 +7,28 @@ define(function (require, exports, module) {
     var $ = require('$');
     var Aspect = require('mi.util.Aspect');
     var funcAspect = require('#funcAspect');
-    var cellula = require('cellula');
+    var util = require('cellula')._util;
     var ajaxQueue = {
         queue:[],
-        call:function (module, callback, asyncspect) {
-            var tmpAjax = ajaxQueue.getAjaxQueueByUrl(module.url);
-            if (tmpAjax) {
-                if (!$.isArray(tmpAjax.success)) {
-                    tmpAjax.success = [tmpAjax.success];
-                }
-                tmpAjax.success.push(module[callback + '_Asyn']);
-            } else {
-                var tmpAjaxInstance = $.ajax({
-                    url:module.url + ('?t=' + new Date().getTime()),
-                    data:module.data,
-                    type:module.method,
-                    timeout:module.timeout,
-                    dataType:module.dataType,
-                    success:[function (response) {
-                        ajaxQueue.delAjaxQueueByUrl(module.url);
-                        if (module.dataType == 'text') {
-                            $(module.rootNode).html($(response));
-                            (module._fill_times) ? module._fill_times++ : (module._fill_times = 1);
-                            //seajs.log(module.__cid__+' dom has been  fill,times='+module._fill_times)
-                        }
-                        //asyncspect._execute(module, callback);
-                        callback && module[callback + '_Asyn'] && (module[callback + '_Asyn']());
-                        asyncspect._clean(module);
-                        module.trigger('DOMLOADED', module);
-                    }]
-                });
-                tmpAjaxInstance.url = module.url;
-console.log(ajaxQueue.queue)
-                //setInterval(function(){console.log(ajaxQueue.queue);},100);
-
-                ajaxQueue.queue.push(tmpAjaxInstance);
-console.log(ajaxQueue.queue)
-            }
-        },
-        getAjaxQueueByUrl:function (url) {
+        get:function (url) {
             var result = null;
-            $.each(ajaxQueue.queue, function (index, value) {
-                if (value.url == url) {
+            util.each(ajaxQueue.queue, function (value) {
+                if (value.url === url) {
                     result = value;
+                    return util.breaker;
                 }
-            });
+            }, undefined ,util.breaker);
             return result;
         },
-        delAjaxQueueByUrl:function (url) {
+        remove:function (url) {
             var result = null;
-            $.each(ajaxQueue.queue, function (index, value) {
-                if (value) {
-                    if (value.url == url) {
-                        ajaxQueue.queue.splice(index, 1);
-                        //seajs.log('remove ajaxQueue :' + value.url);
-                        result = value;
-                    }
+            util.each(ajaxQueue.queue, function (value, index) {
+                if (value.url === url) {
+                    ajaxQueue.queue.splice(index, 1);
+                    result = value;
+                    return util.breaker;
                 }
-            });
+            }, undefined ,util.breaker);
             return result;
         }
     };
@@ -89,31 +53,44 @@ console.log(ajaxQueue.queue)
                 url:node.attr('href') || node.attr('data-url') || false
 
             };
-            cellula._util.mix(module, config);
+            util.mix(module, config);
         },
+        _load:function(){
+            var module = this, _origin = this._origin, args = arguments;
 
-        _execute:function (module, callback) {
-            callback && module[callback + '_Asyn'] && (module[callback + '_Asyn']());
-            asyncspect._clean(module);
-        },
+            if (!module.sync) {
+                var tmpAjax = ajaxQueue.get(module.url);
+                if (tmpAjax) {
+                    if (!$.isArray(tmpAjax.success)) tmpAjax.success = [tmpAjax.success];
 
-        _clean:function (config) {
-            seajs.log('syncspect._clean:' + config.url);
-            config.sync = true;
-        },
+                    tmpAjax.success.push(module._origin);
+                } else {
+                    var tmpAjaxInstance = $.ajax({
+                        url:module.url + ('?t=' + new Date().getTime()),
+                        data:module.data,
+                        type:module.method,
+                        timeout:module.timeout,
+                        dataType:module.dataType, // context fix ,do remember!
+                        success:[function (response) {
+                            ajaxQueue.remove(module.url);
+                            if (module.dataType == 'text') {
+                                $(module.getRoot()).html($(response));
+                                (module._fill_times) ? module._fill_times++ : (module._fill_times = 1);
+                            }
+                            seajs.log('syncspect._clean:' + module.url);
+                            module.sync = true;
+                            module.trigger('DOMLOADED', module);
 
-        _load:function (config, callback) {
-            if (!config.sync) {
-                ajaxQueue.call(config, callback, asyncspect);
+                            return _origin.apply(module, args);
+                        }]
+                    });
+
+                    tmpAjaxInstance.url = module.url;
+                    ajaxQueue.queue.push(tmpAjaxInstance);
+                }
+
             } else {
-                callback && config[callback + '_Asyn'] && (config[callback + '_Asyn']());
-            }
-        },
-        __load__:function(){
-            if (!this.sync) {console.log('hhhhhhh  load async');
-                ajaxQueue.call(this, this.__funcname__, asyncspect);
-            } else {console.log('hhhhhhh  load sync');
-                return this._origin.apply(this, arguments);
+                return _origin.apply(this, arguments);
             }
         },
         /**
@@ -121,34 +98,15 @@ console.log(ajaxQueue.queue)
          * @param module
          */
         aspect:function (module) {
-/*
-            this._init(module);
-            var api = module.getApiMap();
-            Aspect(module);
-            var that = this;
-
-            for (var n in api) {
-                if (module[api[n]]) {
-                    module.before(api[n], function (method, context) {
-                        that._load(context, method);
-                    }, true);
-                }
-            }
-*/
-
             this._init(module);
             var api = module.getApiMap();
 
             for (var n in api) {
                 if (module[api[n]]) {
-                    funcAspect(module).wrap(api[n], this.__load__);
+                    funcAspect(module).wrap(api[n], this._load);
                 }
             }
-
-
-
         }
-
     };
     return asyncspect;
 });

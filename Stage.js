@@ -49,7 +49,7 @@ define(function (require, exports, module) {
             seajs.log(mod.__cid__ + " module's dom has loaded.");
             if (mod) {
                 //Potential problem : deepCopy problem
-                Stage._parseModulesByDom(mod.rootNode, mod);
+                Stage._parseModulesByDom(mod.getRoot(), mod);
             }
         },
         getModuleByClassName:function (name) {

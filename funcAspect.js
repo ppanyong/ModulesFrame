@@ -5,13 +5,6 @@ define(function (require, exports, module) {
         if (!util.isObject(obj)) throw new Error("invalid parameter!");
 
         var __aspect__ = {
-            __method__:function (method, func, context) {
-                if (!util.isFunction(func)) throw new Error("invalid parameter!");
-
-                var origin = obj[name],
-                    args = context ? Array.prototype.slice.call(arguments, 2) : [];
-            },
-
             //afterReturning
             //afterThrowing
             //destroy
@@ -44,9 +37,7 @@ define(function (require, exports, module) {
                 obj[name] = function () { // arguments belongs to origin
                     var temp = obj._origin;
                     obj._origin = origin;
-obj.__funcname__ = name;
                     var ret = func.apply(obj, arguments);
-delete obj.__funcname__;
                     obj._origin = temp;
                     return ret;
                 };
