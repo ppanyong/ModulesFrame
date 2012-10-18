@@ -20,7 +20,7 @@ define(function (require, exports) {
         registerEvents:function(){
             var that = this;
             $('#J_refresh').click(function () {
-                that.sync = false;
+                that._conf.sync = false;
                 that.refresh();
             })
         },
