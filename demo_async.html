@@ -26,10 +26,9 @@
             'stage':'Stage',
             'ASYNCSpect':'asyncspect',
             /** 模块基类 */
-            'mi.net.ModuleBase':"module/ModuleBase",
-            'mi.util.Aspect':"Aspect",
+            'mi.net.ModuleBase':'module/ModuleBase',
             /*主模块*/
-            'module.main':"module/main/main",
+            'module.main':'module/main/main',
             'module.order':'module/order/order',
             'module.detail':'module/detail/detail',
             'module.amount':'module/amount/amount',
@@ -38,9 +37,7 @@
             'message':'message'
         },
 
-        debug:2,
-
-        base:"./",
+        debug:true,
 
         charset:'utf-8'
 
@@ -48,11 +45,11 @@
 
     seajs.use(['stage', '$'], function (stage, $) {
         $(document).ready(function () {
-            stage.run();
+            stage.init();
         });
     });
 
-    seajs.use('#funcAspect', function (a) {
+    seajs.use('#aspect', function (a) {
         var cc = {
             ccc:function () {
                 console.log('im ccc in cc');

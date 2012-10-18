@@ -5,8 +5,7 @@ define(function (require, exports, module) {
      * 对暴露的方法做切面处理
      */
     var $ = require('$');
-    var Aspect = require('mi.util.Aspect');
-    var funcAspect = require('#funcAspect');
+    var aspect = require('#aspect');
     var util = require('cellula')._util;
     var ajaxQueue = {
         queue:[],
@@ -33,7 +32,7 @@ define(function (require, exports, module) {
         }
     };
     var asyncspect = {
-        _init:function (module) {
+        init:function (module) {
             var node = module.rootNode;
             var config = {
                 /** 是否已同步加载*/
@@ -98,12 +97,12 @@ define(function (require, exports, module) {
          * @param module
          */
         aspect:function (module) {
-            this._init(module);
+            this.init(module);
             var api = module.getApiMap();
 
             for (var n in api) {
                 if (module[api[n]]) {
-                    funcAspect(module).wrap(api[n], this._load);
+                    aspect(module).wrap(api[n], this._load);
                 }
             }
         }

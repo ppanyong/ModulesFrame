@@ -8,7 +8,7 @@ define(function (require, exports, module) {
      */
     var ModuleBase = new cellula.Class('ModuleBase', {
         init:function (node) {
-            this._super();
+            //this._super();
             node && (this.rootNode = node);
             this.registerInterface('deliver', mc);
             this.clean();
@@ -36,4 +36,4 @@ define(function (require, exports, module) {
 
     /** 对外接口 */
     return ModuleBase;
-})
+});

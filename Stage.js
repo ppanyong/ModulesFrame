@@ -8,8 +8,7 @@ define(function (require, exports, module) {
     var moduleClassName = ".module";
     var Stage = {
         modules:{},
-        _unbindEvents:[],
-        _init:function () {
+        init:function () {
             this._parseModulesByDom($(document.body))
         },
         _parseModulesByDom:function (dom, mod) {
@@ -22,7 +21,6 @@ define(function (require, exports, module) {
                     //To registration message center for the instance
                     mcenter.subscribe(tmp);
                     tmp.on('DOMLOADED', Stage._onModuleDomLoadedHandler);
-                    //seajs.log('A new module has been bulid. cid = ' + tmp.__cid__);
                     Stage.modules[$(el).attr('data-module')] = tmp;
                 });
             });
@@ -33,9 +31,6 @@ define(function (require, exports, module) {
                 //Potential problem : deepCopy problem
                 Stage._parseModulesByDom(mod.getRoot(), mod);
             }
-        },
-        run:function () {
-            this._init();
         }
     };
     window.Stage = Stage;

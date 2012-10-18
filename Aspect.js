@@ -1,43 +1,50 @@
-//处理切面
-define(function(require, exports) {
-    var actsAsAspect = function(object) {
-        object.yield = null;
-        object.rv = { };
-        object.before = function(method, f, isAsyn) {
-            //var original = eval("this." + method);
-            var original = object[method];
-            if (isAsyn) {
-                this[method + '_Asyn'] = original;
-                this[method] = function() {
-                    //f.apply(this, method);
-                    f(method,this);
-                    var empty = function() {
-                        //console.log(this[method + '_Asyn'] )
-                    };
-                    return empty.apply(this, arguments);
-                }
-            } else {
-                this[method] = function() {
-                    f.apply(this, arguments);
-                    return original.apply(this, arguments);
+define(function (require, exports, module) {
+    var util = require('cellula')._util;
+
+    var aspect = function (obj) {
+        if (!util.isObject(obj)) throw new Error("invalid parameter!");
+
+        var __aspect__ = {
+            //afterReturning
+            //afterThrowing
+            //destroy
+            before:function (name, func, context) {
+                if (!util.isString(name) || !util.isFunction(func)) throw new Error("invalid parameter!");
+
+                var origin = obj[name],
+                    args = context ? util.slice.call(arguments, 3) : [];
+                obj[name] = function () {
+                    func.apply(context || obj, args);
+                    return origin.apply(obj, arguments);
+                };
+            },
+            after:function (name, func, context) {
+                if (!util.isString(name) || !util.isFunction(func)) throw new Error("invalid parameter!");
+
+                var origin = obj[name],
+                    args = context ? util.slice.call(arguments, 3) : [];
+                obj[name] = function () {
+                    var ret = origin.apply(obj, arguments);
+                    func.apply(context || obj, args);
+                    return ret;
+                };
+            },
+            wrap:function (name, func) { // around
+                if (!util.isString(name) || !util.isFunction(func)) throw new Error("invalid parameter!");
+
+                var origin = obj[name];
+
+                obj[name] = function () { // arguments belongs to origin
+                    var temp = obj._origin;
+                    obj._origin = origin;
+                    var ret = func.apply(obj, arguments);
+                    obj._origin = temp;
+                    return ret;
                 };
             }
         };
-        object.after = function(method, f) {
-            var original = eval("this." + method);
-            this[method] = function() {
-                this.rv[method] = original.apply(this, arguments);
-                return f.apply(this, arguments);
-            }
-        };
-        object.around = function(method, f) {
-            var original = eval("this." + method);
-            this[method] = function() {
-                this.yield = original;
-                return f.apply(this, arguments);
-            }
-        };
+        return __aspect__;
+    };
 
-    }
-    return actsAsAspect;
+    return aspect;
 });

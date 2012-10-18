@@ -74,7 +74,6 @@
             'ASYNCSpect':'asyncspect',
             /** 模块基类 */
             'mi.net.ModuleBase':"module/ModuleBase",
-            'mi.util.Aspect':"Aspect",
             /*主模块*/
             'module.main':"module/main/main",
             'module.order':'module/order/order',
@@ -95,7 +94,7 @@
 
     seajs.use(['stage', '$'], function (stage, $) {
         $(document).ready(function () {
-            stage.run();
+            stage.init();
         });
 
     })
