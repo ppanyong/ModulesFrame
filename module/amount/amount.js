@@ -14,8 +14,7 @@ define(function (require, exports) {
         refresh:function () {
             seajs.log('amount.refresh ing...');
             this.registerEvents();
-            //this.trigger('amountChange');
-            this.deliver({code:'amountChange',body:''});
+            this.deliver('AMOUNTCHANGE');
         },
         registerEvents:function(){
             var that = this;
@@ -24,7 +23,7 @@ define(function (require, exports) {
                 that.refresh();
             })
         },
-        _apiMap:{
+        _mcMap:{
             'mi.amount.render':'render',
             'mi.amount.refresh':'refresh'
         }

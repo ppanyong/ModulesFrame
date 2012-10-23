@@ -10,10 +10,10 @@
     <link type="text/css" href="css/css.css" rel="stylesheet"/>
 </head>
 <body>
-<div class="container" id="main" data-module="module.main:sync:module/main/main.html">
+<div class="container" id="main" data-module="module.main" data-mode="sync" data-url="module/main/main.html">
     <div id="orderContainer">
 
-        <div data-module="module.order:sync:module/order/order.html">
+        <div data-module="module.order" data-mode="sync" data-url="module/order/order.html">
             <div class="order">
                 <div class="order-nav">您正在使用的是独立担保交易<span id="tip" class="tip"></span></div>
                 <div class="order-detail">
@@ -21,7 +21,7 @@
                         <div id="detailShort" >
                             <h3 class="product-name">商品名称商品名称商品名称商品名...<span class="saler">卖家昵称：张三张三...</span></h3>
                         </div>
-                        <div data-module="module.detail:sync:module/detail/detail.html" style="display: none; ">
+                        <div data-module="module.detail" data-mode="sync" data-url="module/detail/detail.html" style="display: none; ">
                             <h3 class="product-name">
                             商品名称商品名称商品名称商品名商品名称商品名称商品名称商品名商品名称商品名称商品名称商品名商品名称商品名称商品名称商品名
                             </h3>
@@ -37,7 +37,7 @@
                         </div>
                         <div id="detail" style="display: none; ">订单详情正在加载中...</div>
                     </div>
-                    <div class="amount" data-module="module.amount:sync:module/amount/amount.html">
+                    <div class="amount" data-module="module.amount" data-mode="sync" data-url="module/amount/amount.html">
                         <span class="price" id="price">200.00</span> 元
                         <a id="J_refresh" href="#">刷新</a>
 
@@ -90,7 +90,7 @@
 
     seajs.use(['stage', '$'], function (stage, $) {
         $(document).ready(function () {
-            stage.init();
+            stage.init(document.body);
         });
 
     })

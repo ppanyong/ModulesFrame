@@ -10,14 +10,12 @@
     <link type="text/css" href="css/css.css" rel="stylesheet"/>
 </head>
 <body>
-<div class="container" id="main" data-module="module.main:async:module/main/main.html">
+<div class="container" id="main" data-module="module.main" data-mode="async" data-url="module/main/main.html">
 
     <div class="loading">订单详情正在加载中...</div>
 
 </div>
 
-
-</div>
 <script src="sea.js" charset="utf-8"></script>
 <script>
     seajs.config({
@@ -43,11 +41,12 @@
 
     seajs.use(['stage', '$'], function (stage, $) {
         $(document).ready(function () {
-            stage.init();
+            stage.init(document.body);
         });
     });
 
-    seajs.use('#aspect', function (a) {
+    seajs.use('cellula', function (c) {
+        var a = c._util.aspect;
         var cc = {
             ccc:function () {
                 console.log('im ccc in cc');

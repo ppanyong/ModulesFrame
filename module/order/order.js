@@ -5,7 +5,6 @@ define(function (require, exports) {
     var Class = require('cellula').Class;
     var $ = require('$');
     var ModuleBase = require('mi.net.ModuleBase');
-    var stage = window.Stage;
     var Order = new Class('Order', {
         relay:true,
         render:function () {
@@ -39,10 +38,10 @@ define(function (require, exports) {
             $('#detailShort').show();
         },
 
-        _apiMap:{
+        _mcMap:{
             'mi.order.render':'render',
             'mi.order.hideShortDetail':'hideShortDetail',
-            'amountChange' : 'onAmountChangeHandler'
+            "AMOUNTCHANGE" : 'onAmountChangeHandler'
         }
     }).inherits(ModuleBase);
 
