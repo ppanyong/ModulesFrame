@@ -20,7 +20,7 @@ define(function(require, exports) {
             $('#price').html(Number($('#price').html())+1);
             this.deliver({code : 'mi.order.hideShortDetail',body:''});
         },
-        _apiMap : {
+        _mcMap : {
             'mi.detail.render' : 'render',
             'mi.detail.hide' : 'hide',
             'mi.detail.show' : 'show'

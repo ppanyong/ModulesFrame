@@ -14,16 +14,16 @@ define(function (require, exports) {
         refresh:function () {
             seajs.log('amount.refresh ing...');
             this.registerEvents();
-            this.trigger('amountChange');
+            this.deliver('AMOUNTCHANGE');
         },
         registerEvents:function(){
             var that = this;
             $('#J_refresh').click(function () {
-                that.sync = false;
+                that._conf.sync = false;
                 that.refresh();
             })
         },
-        _apiMap:{
+        _mcMap:{
             'mi.amount.render':'render',
             'mi.amount.refresh':'refresh'
         }

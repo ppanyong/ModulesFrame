@@ -5,7 +5,6 @@ define(function (require, exports) {
     var Class = require('cellula').Class;
     var $ = require('$');
     var ModuleBase = require('mi.net.ModuleBase');
-    var stage = window.Stage;
     var Order = new Class('Order', {
         relay:true,
         render:function () {
@@ -25,7 +24,7 @@ define(function (require, exports) {
                 $(this).addClass("pay-disabled");
                 $('#paySuccessTip').html('订单正在提交中...');
             });
-            stage.registerModuleEvents('module.amount', 'amountChange', this.onAmountChangeHandler)
+            //stage.registerModuleEvents('module.amount', 'amountChange', this.onAmountChangeHandler)
         },
         onAmountChangeHandler:function () {
             $('#tip').html('金额发生变化');
@@ -39,9 +38,10 @@ define(function (require, exports) {
             $('#detailShort').show();
         },
 
-        _apiMap:{
+        _mcMap:{
             'mi.order.render':'render',
-            'mi.order.hideShortDetail':'hideShortDetail'
+            'mi.order.hideShortDetail':'hideShortDetail',
+            "AMOUNTCHANGE" : 'onAmountChangeHandler'
         }
     }).inherits(ModuleBase);
 
