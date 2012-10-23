@@ -5,7 +5,8 @@ define(function (require, exports, module) {
     var $ = require('$');
     var mcenter = require('message');
     var cellula = require('cellula');
-    var moduleSelector = '*[data-module]'
+    var moduleNameProp = 'data-module';
+    var moduleSelector = '*['+moduleNameProp+']';
     var Stage = {
         modules:{},
         init:function (dom) {
@@ -13,7 +14,7 @@ define(function (require, exports, module) {
         },
         _parseModulesByDom:function (dom) {
             $(moduleSelector, dom).each(function (index, el) {
-                var name = $(el).attr('data-module');
+                var name = $(el).attr(moduleNameProp);
                 seajs.use(name, function (mo) {
                     if (Stage.modules[name]) return;
 

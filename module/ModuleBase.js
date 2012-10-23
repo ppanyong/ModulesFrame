@@ -9,9 +9,10 @@ define(function (require, exports, module) {
      */
     var ModuleBase = new cellula.Class('ModuleBase', {
         relay:false,
+        _conf:{},
         init:function (cfg) {
             this._super(cfg);
-            this._conf = this._config();
+            this._config();
             this.registerInterface('deliver', mc);
             this.clean();
 
@@ -33,7 +34,7 @@ define(function (require, exports, module) {
             conf.type = el.attr('data-type') || 'text';
             conf.method = el.attr('data-method') || 'get';
             conf.timeout = el.attr('data-timeout') || 0;
-            return conf;
+            this._conf = conf;
         },
         _load:function () {
             var module = this, _origin = this._origin, args = arguments, conf = module._conf;
