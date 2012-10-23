@@ -11,19 +11,19 @@ define(function(require, exports) {
         render:function() {
             //start load
             var that = this;
-            $('#J_getOrder').click(function(el) {
+            $('#J_getOrder').click(function() {
                 that.deliver({code : 'mi.order.render',body:{}});
                 that.deliver({code : 'mi.order.render',body:{}});
                 that.deliver({code : 'mi.order.render',body:{}});
                 that.deliver({code : 'mi.order.render',body:{}});
                 $('#orderContainer').removeClass('load-order');
                 $('#J_getOrder').remove();
-            })
+            });
             if(this.sync){
                 that.deliver({code : 'mi.order.render',body:{}});
             }
         },
-        _apiMap : {
+        _mcMap : {
             'mi.main.render' : 'render'
         }
     }).inherits(ModuleBase);
